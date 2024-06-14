@@ -1,0 +1,45 @@
+-- Create the books table
+CREATE TABLE books (
+    book_id INT PRIMARY KEY AUTO_INCREMENT,
+    title VARCHAR(255) NOT NULL,
+    publication_year INT,
+    genre VARCHAR(100)
+);
+
+-- Create the authors table
+CREATE TABLE authors (
+    author_id INT PRIMARY KEY AUTO_INCREMENT,
+    first_name VARCHAR(100) NOT NULL,
+    last_name VARCHAR(100) NOT NULL,
+    birthdate DATE
+);
+
+-- Create the junction table to establish the many-to-many relationship
+CREATE TABLE book_authors (
+    book_id INT,
+    author_id INT,
+    PRIMARY KEY (book_id, author_id),
+    FOREIGN KEY (book_id) REFERENCES books(book_id),
+    FOREIGN KEY (author_id) REFERENCES authors(author_id)
+);
+
+-- Insert test data into the books table
+INSERT INTO books (title, publication_year, genre) VALUES
+('To Kill a Mockingbird', 1960, 'Fiction'),
+('1984', 1949, 'Dystopian'),
+('Pride and Prejudice', 1813, 'Romance'),
+('The Great Gatsby', 1925, 'Fiction');
+
+-- Insert test data into the authors table
+INSERT INTO authors (first_name, last_name, birthdate) VALUES
+('Harper', 'Lee', '1926-04-28'),
+('George', 'Orwell', '1903-06-25'),
+('Jane', 'Austen', '1775-12-16'),
+('F. Scott', 'Fitzgerald', '1896-09-24');
+
+-- Insert test data into the book_authors table
+INSERT INTO book_authors (book_id, author_id) VALUES
+((SELECT book_id FROM books WHERE title = 'To Kill a Mockingbird'), (SELECT author_id FROM authors WHERE last_name = 'Lee')),
+((SELECT book_id FROM books WHERE title = '1984'), (SELECT author_id FROM authors WHERE last_name = 'Orwell')),
+((SELECT book_id FROM books WHERE title = 'Pride and Prejudice'), (SELECT author_id FROM authors WHERE last_name = 'Austen')),
+((SELECT book_id FROM books WHERE title = 'The Great Gatsby'), (SELECT author_id FROM authors WHERE last_name = 'Fitzgerald'));
